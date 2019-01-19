@@ -71,21 +71,36 @@ class ResizingIntSet
   end
 
   def insert(num)
-    #Still needs to account for if element already exists 
-    if @count < num_buckets
-      self[num] << num 
-    else 
-      resize!
-      self[num] << num 
+    #Still needs to account for if element already exist
+    unless include?(num)
+      if @count < num_buckets 
+        self[num] << num 
+      else 
+        resize!
+        self[num] << num 
+      end
+
+      @count += 1
     end
-    
-    @count += 1
+
   end
 
   def remove(num)
+    if include?(num)
+      @store.each do |bucket|
+        bucket.reject!{|el| el == num}
+      end
+      @count -= 1
+    else
+    end
+
   end
 
   def include?(num)
+    @store.each do |bucket|
+      return true if bucket.include?(num)
+    end
+    false
   end
 
   private
